@@ -12,7 +12,9 @@
 
 class Field {
 private:
-    Cell *field;
+    Cell *mainField;
+    Cell *neighbourUpField;
+    Cell *neighbourDownField;
 
     void attachTemplateA1(Cell &cell);
 
@@ -60,12 +62,12 @@ private:
 
 public:
     Cell &getCell(int x, int y) {
-        return field[y * FieldConfig::LENGTH + x];
+        return mainField[y * FieldConfig::LENGTH + x];
     }
 
     void applyFirstRule(Cell &cell);
 
-    Field();
+    Field(int rowNumber);
 
     ~Field();
 

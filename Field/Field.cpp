@@ -4,27 +4,27 @@
 
 #include "Field.h"
 
-Field::Field() {
-    field = new Cell[FieldConfig::WIDTH * FieldConfig::LENGTH];
+Field::Field(int rowNumber) {
+    mainField = new Cell[rowNumber * FieldConfig::LENGTH];
     srand(time(NULL));
     for (int j = 0; j < FieldConfig::WIDTH; ++j) {
         for (int i = 0; i < FieldConfig::LENGTH; ++i) {
-            field[j * FieldConfig::LENGTH + i].setCurValueOnField(rand() % 2);
-            field[j * FieldConfig::LENGTH + i].setPosX(i);
-            field[j * FieldConfig::LENGTH + i].setPosY(j);
+            mainField[j * FieldConfig::LENGTH + i].setCurValueOnField(rand() % 2);
+            mainField[j * FieldConfig::LENGTH + i].setPosX(i);
+            mainField[j * FieldConfig::LENGTH + i].setPosY(j);
         }
     }
 }
 
 Field::~Field() {
-    delete[] field;
+    delete[] mainField;
 }
 
 void Field::printField() {
     for (int j = 0; j < FieldConfig::WIDTH; ++j) {
         for (int i = 0; i < FieldConfig::LENGTH; ++i) {
             std::cout << "|";
-            std::cout << field[j * FieldConfig::LENGTH + i].getCurValueOnField();
+            std::cout << mainField[j * FieldConfig::LENGTH + i].getCurValueOnField();
         }
         std::cout << "|" << std::endl;
     }
@@ -79,9 +79,9 @@ std::vector<Cell> Field::getSmallHull(Cell &leftTopCorner, Cell &firstKernelCell
     std::vector<Cell> area;
     for (int i = leftTopCorner.getPosY(); i <= leftTopCorner.getPosY() + 2; ++i) {
         for (int j = leftTopCorner.getPosX(); j <= leftTopCorner.getPosX() + 2; ++j) {
-            if (field[i * FieldConfig::LENGTH + j] != firstKernelCell &&
-                field[i * FieldConfig::LENGTH + j] != secondKernelCell) {
-                area.push_back(field[i * FieldConfig::LENGTH + j]);
+            if (mainField[i * FieldConfig::LENGTH + j] != firstKernelCell &&
+                mainField[i * FieldConfig::LENGTH + j] != secondKernelCell) {
+                area.push_back(mainField[i * FieldConfig::LENGTH + j]);
             }
         }
     }
@@ -92,8 +92,8 @@ std::vector<Cell> Field::getBigVerticalHull(Cell &top, Cell &bottom) {
     std::vector<Cell> area;
     for (int i = top.getPosY() - 1; i <= top.getPosY() + 2; ++i) {
         for (int j = top.getPosX() - 1; j <= top.getPosX() + 1; ++j) {
-            if (field[i * FieldConfig::LENGTH + j] != top && field[i * FieldConfig::LENGTH + j] != bottom) {
-                area.push_back(field[i * FieldConfig::LENGTH + j]);
+            if (mainField[i * FieldConfig::LENGTH + j] != top && mainField[i * FieldConfig::LENGTH + j] != bottom) {
+                area.push_back(mainField[i * FieldConfig::LENGTH + j]);
             }
         }
     }
@@ -104,8 +104,8 @@ std::vector<Cell> Field::getBigHorizontalHull(Cell &left, Cell &right) {
     std::vector<Cell> area;
     for (int i = left.getPosY() - 1; i <= left.getPosY() + 1; ++i) {
         for (int j = left.getPosX() - 1; j <= left.getPosX() + 2; ++j) {
-            if (field[i * FieldConfig::LENGTH + j] != left && field[i * FieldConfig::LENGTH + j] != right) {
-                area.push_back(field[i * FieldConfig::LENGTH + j]);
+            if (mainField[i * FieldConfig::LENGTH + j] != left && mainField[i * FieldConfig::LENGTH + j] != right) {
+                area.push_back(mainField[i * FieldConfig::LENGTH + j]);
             }
         }
     }
@@ -266,7 +266,7 @@ void Field::attachTemplateA7(Cell &cell) {
         Cell topLeftCorner = getCell(cell.getPosX() - 1, cell.getPosY());
         Cell top = getCell(cell.getPosX(), cell.getPosY() + 1);
         Cell bot = getCell(cell.getPosX(), cell.getPosY() + 2);
-        std::vector<Cell> hull = getSmallHull(topLeftCorner, top,   bot);
+        std::vector<Cell> hull = getSmallHull(topLeftCorner, top, bot);
         if (validateHull(hull) && validateKernel(top, bot)) {
             cell.setCurValueOnField(0);
             cell.incMatchValue();
@@ -353,7 +353,7 @@ void Field::attachTemplateA10(Cell &cell) {
 
 void Field::attachTemplateA11(Cell &cell) {
     if (checkSmallTemplateBounds(cell.getPosX() + 1, cell.getPosY() - 1)) {
-        Cell topLeftCorner = getCell(cell.getPosX() - 2, cell.getPosY());
+        Cell topLeftCorner = getCell(cell.getPosX(), cell.getPosY() - 2);
         Cell left = getCell(cell.getPosX() + 1, cell.getPosY() - 1);
         Cell right = getCell(cell.getPosX() + 2, cell.getPosY() - 1);
         std::vector<Cell> hull = getSmallHull(topLeftCorner, left, right);
