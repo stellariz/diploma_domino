@@ -41,7 +41,7 @@ public:
 
     void incMatchValue() {
         Cell::matchValue++;
-        }
+    }
 
     int getCurValueOnField() const {
         return curValue;

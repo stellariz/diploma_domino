@@ -4,8 +4,8 @@
 
 #include "Field.h"
 
-Field::Field(int rowNumber) {
-    mainField = new Cell[rowNumber * FieldConfig::LENGTH];
+Field::Field() {
+    mainField = new Cell[FieldConfig::WIDTH * FieldConfig::LENGTH];
     srand(time(NULL));
     for (int j = 0; j < FieldConfig::WIDTH; ++j) {
         for (int i = 0; i < FieldConfig::LENGTH; ++i) {
@@ -18,9 +18,11 @@ Field::Field(int rowNumber) {
 
 Field::~Field() {
     delete[] mainField;
+    delete[] procField;
 }
 
-void Field::printField() {
+
+void Field::printMainField() {
     for (int j = 0; j < FieldConfig::WIDTH; ++j) {
         for (int i = 0; i < FieldConfig::LENGTH; ++i) {
             std::cout << "|";
@@ -401,7 +403,7 @@ void Field::attachTemplateA12(Cell &cell) {
     }
 }
 
-void Field::applyFirstRule(Cell &cell) {
+void Field::applyFirstRule(Cell &cell, int shiftVec) {
     cell.setMatchValue(0);
     int oldValue = cell.getCurValueOnField();
     cell.setCurValueOnField(-1);
@@ -460,6 +462,31 @@ void Field::applyFirstRule(Cell &cell) {
             cell.setCurValueOnField(oldValue);
         }
     }
+}
+
+void Field::initProcField(int sizeOfData, int shiftVec) {
+    procField = new Cell[sizeOfData * FieldConfig::LENGTH];
+    std::copy(mainField + (shiftVec * FieldConfig::LENGTH), mainField + (shiftVec + sizeOfData) * FieldConfig::LENGTH,
+              procField);
+}
+
+void Field::printProcField(int sizeOfData) {
+    for (int j = 0; j < sizeOfData; ++j) {
+        for (int i = 0; i < FieldConfig::LENGTH; ++i) {
+            std::cout << "|";
+            std::cout << procField[j * FieldConfig::LENGTH + i].getCurValueOnField();
+        }
+        std::cout << "|" << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+Cell *Field::getMainField() {
+    return mainField;
+}
+
+Cell *Field::getProcField() {
+    return procField;
 }
 
 

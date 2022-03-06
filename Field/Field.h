@@ -13,8 +13,7 @@
 class Field {
 private:
     Cell *mainField;
-    Cell *neighbourUpField;
-    Cell *neighbourDownField;
+    Cell *procField;
 
     void attachTemplateA1(Cell &cell);
 
@@ -65,13 +64,21 @@ public:
         return mainField[y * FieldConfig::LENGTH + x];
     }
 
-    void applyFirstRule(Cell &cell);
+    void initProcField(int sizeOfData, int shiftVec);
 
-    Field(int rowNumber);
+    void applyFirstRule(Cell &cell, int shiftVec);
+
+    Field();
 
     ~Field();
 
-    void printField();
+    void printMainField();
+
+    void printProcField(int sizeOfData);
+
+    Cell* getMainField();
+
+    Cell* getProcField();
 };
 
 

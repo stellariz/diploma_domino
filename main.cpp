@@ -4,10 +4,11 @@
 #include <unistd.h>
 
 
-void updateField(Field &field, int rank, int size) {
-    int randomX = rand() % FieldConfig::LENGTH;
+void updateField(Field &field, const int dataVec, const int shiftVec) {
+    int randomX = rand() % dataVec + shiftVec;
     int randomY = rand() % FieldConfig::WIDTH;
-    field.applyFirstRule(field.getCell(randomX, randomY));
+    field.applyFirstRule(field.getCell(randomX, randomY), shiftVec);
+    std::cout << randomX << std::endl;
 }
 
 
@@ -26,30 +27,29 @@ void dataDistribution(int *dataVec, int *shiftVec, const int numProcs) {
 int main(int argc, char **argv) {
     int *dataVec, *shiftVec;
     int size, rank;
+    Field field;
     MPI_Init(&argc, &argv);
-    int a[3] =  {1,2,3};
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     dataVec = new int[size];
     shiftVec = new int[size];
-    /*for (int i = 0; i < 5000; ++i) {
+    dataDistribution(dataVec, shiftVec, size);
+    field.initProcField(dataVec[rank], shiftVec[rank]);
+
+    for (int i = 0; i < 5000; ++i) {
         for (int j = 0; j < FieldConfig::LENGTH * FieldConfig::WIDTH; ++j) {
-            updateField(field, rank, size);
+            updateField(field, dataVec[rank], shiftVec[rank]);
         }
-        //  if (rank == 0) {
-        field.printField();
-        // }
-    }*/
-    //dataDistribution(dataVec, shiftVec, size);
-    if (rank == 0){
-        a[0] = 2;
-    } else {
-        sleep(3);
+        //MPI_Allgatherv(field.getProcField(), dataVec[rank], );
+        if (rank == 0) {
+            field.printMainField();
+        }
     }
-    if (rank != 0){
-        std::cout << a[1];
-    }
-    //Field field(rank, dataVec[rank]);
+    /* if (rank == 3){
+         for (int i = 0; i < 10; ++i){
+             updateField(field, dataVec, shiftVec, rank, size);
+         }
+     }*/
     MPI_Finalize();
     delete[] dataVec;
     delete[] shiftVec;
