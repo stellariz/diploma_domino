@@ -66,7 +66,7 @@ public:
 
     void initProcField(int sizeOfData, int shiftVec);
 
-    void applyFirstRule(Cell &cell, int shiftVec);
+    void applyFirstRule(Cell &cell);
 
     Field();
 

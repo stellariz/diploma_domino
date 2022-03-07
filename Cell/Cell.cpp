@@ -4,23 +4,15 @@
 
 #include "Cell.h"
 
-Cell::Cell(int x, int y) {
-    posX = x;
-    posY = y;
-}
-
 bool operator==(const Cell &lhs, const Cell &rhs) {
-    return lhs.getPosX() == rhs.getPosX() &&
-           lhs.getPosY() == rhs.getPosY();
+    return lhs.posX == rhs.posX &&
+           lhs.posY == rhs.posY;
 }
 
 bool operator!=(const Cell &lhs, const Cell &rhs) {
     return !(lhs == rhs);
 }
 
-void Cell::setMatchValue(int matchValue) {
-    Cell::matchValue = matchValue;
-}
 
 
 

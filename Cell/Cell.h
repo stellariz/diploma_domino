@@ -8,50 +8,13 @@
 #include <vector>
 
 class Cell {
-private:
+public:
     int posX = 0;
     int posY = 0;
     int curValue = -1;
     int matchValue = 0;
 
-public:
     Cell() = default;
-
-    Cell(int x, int y);
-
-    int getPosX() const {
-        return posX;
-    }
-
-    void setPosX(int posX) {
-        Cell::posX = posX;
-    }
-
-    int getPosY() const {
-        return posY;
-    }
-
-    void setPosY(int posY) {
-        Cell::posY = posY;
-    }
-
-    int getMatchValue() const {
-        return matchValue;
-    }
-
-    void incMatchValue() {
-        Cell::matchValue++;
-    }
-
-    int getCurValueOnField() const {
-        return curValue;
-    }
-
-    void setCurValueOnField(int curValueOnField) {
-        Cell::curValue = curValueOnField;
-    }
-
-    void setMatchValue(int matchValue);
 
     friend bool operator==(const Cell &lhs, const Cell &rhs);
 
