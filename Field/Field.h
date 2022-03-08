@@ -12,8 +12,7 @@
 
 class Field {
 private:
-    Cell *mainField;
-    Cell *procField;
+    Cell *pieceOfField;
 
     void attachTemplateA1(Cell &cell);
 
@@ -61,24 +60,22 @@ private:
 
 public:
     Cell &getCell(int x, int y) {
-        return mainField[y * FieldConfig::LENGTH + x];
+        return pieceOfField[y * FieldConfig::LENGTH + x];
     }
-
-    void initProcField(int sizeOfData, int shiftVec);
 
     void applyFirstRule(Cell &cell);
 
-    Field();
+    Field(int sizeOfField, int rank, int size);
 
     ~Field();
 
-    void printMainField();
+    void printMainField(int rank, int size, int sizeOfPiece);
 
-    void printProcField(int sizeOfData);
+    Cell* getUpperBound(int rank, int size);
+
+    Cell* getLowerBound(int rank);
 
     Cell* getMainField();
-
-    Cell* getProcField();
 };
 
 

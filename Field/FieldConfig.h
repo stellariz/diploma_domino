@@ -8,8 +8,8 @@
 
 class FieldConfig {
 public:
-    static const int WIDTH = 7;
-    static const int LENGTH = 7;
+    static const int WIDTH = 9;
+    static const int LENGTH = 9;
 };
 
 

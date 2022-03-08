@@ -4,33 +4,64 @@
 
 #include "Field.h"
 
-Field::Field() {
-    mainField = new Cell[FieldConfig::WIDTH * FieldConfig::LENGTH];
-    srand(time(NULL));
-    for (int j = 0; j < FieldConfig::WIDTH; ++j) {
-        for (int i = 0; i < FieldConfig::LENGTH; ++i) {
-            mainField[j * FieldConfig::LENGTH + i].curValue = rand() % 2;
-            mainField[j * FieldConfig::LENGTH + i].posX = i;
-            mainField[j * FieldConfig::LENGTH + i].posY = j;
+Field::Field(int sizeOfPiece, int rank, int size) {
+    srand(time(NULL) + rank);
+    if (rank == 0) {
+        pieceOfField = new Cell[sizeOfPiece + 3 * FieldConfig::LENGTH];
+        for (int j = 0; j < sizeOfPiece / FieldConfig::LENGTH; ++j) {
+            for (int i = 0; i < FieldConfig::LENGTH; ++i) {
+                pieceOfField[j * FieldConfig::LENGTH + i].curValue = rand() % 2;
+                pieceOfField[j * FieldConfig::LENGTH + i].posX = i;
+                pieceOfField[j * FieldConfig::LENGTH + i].posY = j;
+            }
+        }
+    } else if (rank == size - 1) {
+        pieceOfField = new Cell[sizeOfPiece + 3 * FieldConfig::LENGTH];
+        for (int j = 3; j < sizeOfPiece / FieldConfig::LENGTH + 3; ++j) {
+            for (int i = 0; i < FieldConfig::LENGTH; ++i) {
+                pieceOfField[j * FieldConfig::LENGTH + i].curValue = rand() % 2;
+                pieceOfField[j * FieldConfig::LENGTH + i].posX = i;
+                pieceOfField[j * FieldConfig::LENGTH + i].posY = j;
+            }
+        }
+    } else {
+        pieceOfField = new Cell[sizeOfPiece + 6 * FieldConfig::LENGTH];
+        for (int j = 3; j < sizeOfPiece / FieldConfig::LENGTH + 3; ++j) {
+            for (int i = 0; i < FieldConfig::LENGTH; ++i) {
+                pieceOfField[j * FieldConfig::LENGTH + i].curValue = rand() % 2;
+                pieceOfField[j * FieldConfig::LENGTH + i].posX = i;
+                pieceOfField[j * FieldConfig::LENGTH + i].posY = j;
+            }
         }
     }
 }
+
 
 Field::~Field() {
-    delete[] mainField;
-    delete[] procField;
+    delete[] pieceOfField;
 }
 
 
-void Field::printMainField() {
-    for (int j = 0; j < FieldConfig::WIDTH; ++j) {
-        for (int i = 0; i < FieldConfig::LENGTH; ++i) {
-            std::cout << "|";
-            std::cout << mainField[j * FieldConfig::LENGTH + i].curValue;
+void Field::printMainField(int rank, int size, int sizeOfPiece) {
+    if (rank == 0 || rank == size - 1) {
+        for (int j = 0; j < sizeOfPiece / FieldConfig::LENGTH + 3; ++j) {
+            for (int i = 0; i < FieldConfig::LENGTH; ++i) {
+                std::cout << "|";
+                std::cout << pieceOfField[j * FieldConfig::LENGTH + i].curValue;
+            }
+            std::cout << "|" << std::endl;
         }
-        std::cout << "|" << std::endl;
+        std::cout << std::endl;
+    } else {
+        for (int j = 0; j < sizeOfPiece / FieldConfig::LENGTH + 6; ++j) {
+            for (int i = 0; i < FieldConfig::LENGTH; ++i) {
+                std::cout << "|";
+                std::cout << pieceOfField[j * FieldConfig::LENGTH + i].curValue;
+            }
+            std::cout << "|" << std::endl;
+        }
+        std::cout << std::endl;
     }
-    std::cout << std::endl;
 }
 
 
@@ -81,9 +112,9 @@ std::vector<Cell> Field::getSmallHull(Cell &leftTopCorner, Cell &firstKernelCell
     std::vector<Cell> area;
     for (int i = leftTopCorner.posY; i <= leftTopCorner.posY + 2; ++i) {
         for (int j = leftTopCorner.posX; j <= leftTopCorner.posX + 2; ++j) {
-            if (mainField[i * FieldConfig::LENGTH + j] != firstKernelCell &&
-                mainField[i * FieldConfig::LENGTH + j] != secondKernelCell) {
-                area.push_back(mainField[i * FieldConfig::LENGTH + j]);
+            if (pieceOfField[i * FieldConfig::LENGTH + j] != firstKernelCell &&
+                pieceOfField[i * FieldConfig::LENGTH + j] != secondKernelCell) {
+                area.push_back(pieceOfField[i * FieldConfig::LENGTH + j]);
             }
         }
     }
@@ -94,8 +125,9 @@ std::vector<Cell> Field::getBigVerticalHull(Cell &top, Cell &bottom) {
     std::vector<Cell> area;
     for (int i = top.posY - 1; i <= top.posY + 2; ++i) {
         for (int j = top.posX - 1; j <= top.posX + 1; ++j) {
-            if (mainField[i * FieldConfig::LENGTH + j] != top && mainField[i * FieldConfig::LENGTH + j] != bottom) {
-                area.push_back(mainField[i * FieldConfig::LENGTH + j]);
+            if (pieceOfField[i * FieldConfig::LENGTH + j] != top &&
+                pieceOfField[i * FieldConfig::LENGTH + j] != bottom) {
+                area.push_back(pieceOfField[i * FieldConfig::LENGTH + j]);
             }
         }
     }
@@ -106,8 +138,9 @@ std::vector<Cell> Field::getBigHorizontalHull(Cell &left, Cell &right) {
     std::vector<Cell> area;
     for (int i = left.posY - 1; i <= left.posY + 1; ++i) {
         for (int j = left.posX - 1; j <= left.posX + 2; ++j) {
-            if (mainField[i * FieldConfig::LENGTH + j] != left && mainField[i * FieldConfig::LENGTH + j] != right) {
-                area.push_back(mainField[i * FieldConfig::LENGTH + j]);
+            if (pieceOfField[i * FieldConfig::LENGTH + j] != left &&
+                pieceOfField[i * FieldConfig::LENGTH + j] != right) {
+                area.push_back(pieceOfField[i * FieldConfig::LENGTH + j]);
             }
         }
     }
@@ -464,29 +497,25 @@ void Field::applyFirstRule(Cell &cell) {
     }
 }
 
-void Field::initProcField(int sizeOfData, int shiftVec) {
-    procField = new Cell[sizeOfData];
-    std::copy(mainField + shiftVec, mainField + shiftVec + sizeOfData,procField);
-}
-
-void Field::printProcField(int sizeOfData) {
-    for (int j = 0; j < sizeOfData; ++j) {
-        for (int i = 0; i < FieldConfig::LENGTH; ++i) {
-            std::cout << "|";
-            std::cout << procField[j * FieldConfig::LENGTH + i].curValue;
-        }
-        std::cout << "|" << std::endl;
-    }
-    std::cout << std::endl;
-}
 
 Cell *Field::getMainField() {
-    return mainField;
+    return pieceOfField;
 }
 
-Cell *Field::getProcField() {
-    return procField;
+Cell *Field::getUpperBound(int rank, int size) {
+    if (rank == 0) {
+        return pieceOfField + size;
+    }
+    return pieceOfField + size + 3 * FieldConfig::LENGTH;
 }
+
+Cell *Field::getLowerBound(int rank) {
+    if (rank == 0) {
+        return pieceOfField;
+    }
+    return pieceOfField + 3 * FieldConfig::LENGTH;
+}
+
 
 
 
