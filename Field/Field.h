@@ -12,7 +12,8 @@
 
 class Field {
 private:
-    Cell *pieceOfField;
+    Cell *bigPieceOfField;
+    Cell *fieldWithNewValues;
 
     void attachTemplateA1(Cell &cell);
 
@@ -60,10 +61,10 @@ private:
 
 public:
     Cell &getCell(int x, int y) {
-        return pieceOfField[y * FieldConfig::LENGTH + x];
+        return bigPieceOfField[y * FieldConfig::LENGTH + x];
     }
 
-    void applyFirstRule(Cell &cell);
+    void applyFirstRule(Cell &cell, int shift);
 
     Field(int sizeOfField, int rank, int size);
 
@@ -71,11 +72,11 @@ public:
 
     void printMainField(int rank, int size, int sizeOfPiece);
 
-    Cell* getUpperBound(int rank, int size);
+    Cell *getUpperBound(int rank, int size);
 
-    Cell* getLowerBound(int rank);
+    Cell *getLowerBound(int rank);
 
-    Cell* getMainField();
+    Cell *getMainField();
 };
 
 
