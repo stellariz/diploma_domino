@@ -91,14 +91,20 @@ int main(int argc, char **argv) {
     dataDistribution(dataVec, shiftVec, size);
     Field field(dataVec[rank], rank, size);
     MPI_Request reqs[2], reqr[2];
+
     for (int i = 0; i < 5000; ++i) {
         for (int j = 0; j < FieldConfig::LENGTH * dataVec[rank]; ++j) {
             updateField(field, rank, dataVec[rank]);
         }
         sendBoundaries(field, cellType, dataVec[rank], reqs, reqr, rank, size);
         waitEndOfCommunication(reqr, reqs, rank, size);
-        if (rank == 0){
-            field.printMainField(rank, size, dataVec[rank]);
+        MPI_Barrier(MPI_COMM_WORLD);
+        for (int j = 0; j < size; ++j) {
+            if (rank == j) {
+                field.printMainField(rank, size, dataVec[rank]);
+            } else {
+                sleep(1);
+            }
         }
     }
     if (rank == 0){

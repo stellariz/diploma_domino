@@ -5,7 +5,6 @@
 #include "Field.h"
 
 Field::Field(int sizeOfPiece, int rank, int size) {
-    fieldWithNewValues = new Cell[sizeOfPiece];
     srand(time(NULL) + rank);
     if (rank == 0) {
         bigPieceOfField = new Cell[sizeOfPiece + 3 * FieldConfig::LENGTH];
@@ -14,7 +13,6 @@ Field::Field(int sizeOfPiece, int rank, int size) {
                 bigPieceOfField[j * FieldConfig::LENGTH + i].curValue = rand() % 2;
                 bigPieceOfField[j * FieldConfig::LENGTH + i].posX = i;
                 bigPieceOfField[j * FieldConfig::LENGTH + i].posY = j;
-                fieldWithNewValues[j * FieldConfig::LENGTH + i] = bigPieceOfField[j * FieldConfig::LENGTH + i];
             }
         }
     } else if (rank == size - 1) {
@@ -24,7 +22,6 @@ Field::Field(int sizeOfPiece, int rank, int size) {
                 bigPieceOfField[j * FieldConfig::LENGTH + i].curValue = rand() % 2;
                 bigPieceOfField[j * FieldConfig::LENGTH + i].posX = i;
                 bigPieceOfField[j * FieldConfig::LENGTH + i].posY = j;
-                fieldWithNewValues[(j-3) * FieldConfig::LENGTH + i] = bigPieceOfField[j * FieldConfig::LENGTH + i];
             }
         }
     } else {
@@ -34,7 +31,6 @@ Field::Field(int sizeOfPiece, int rank, int size) {
                 bigPieceOfField[j * FieldConfig::LENGTH + i].curValue = rand() % 2;
                 bigPieceOfField[j * FieldConfig::LENGTH + i].posX = i;
                 bigPieceOfField[j * FieldConfig::LENGTH + i].posY = j;
-                fieldWithNewValues[(j-3) * FieldConfig::LENGTH + i] = bigPieceOfField[j * FieldConfig::LENGTH + i];
             }
         }
     }
@@ -43,28 +39,28 @@ Field::Field(int sizeOfPiece, int rank, int size) {
 
 Field::~Field() {
     delete[] bigPieceOfField;
-    delete[] fieldWithNewValues;
 }
 
 
 void Field::printMainField(int rank, int size, int sizeOfPiece) {
-    if (rank == 0 || rank == size - 1) {
-        for (int j = 0; j < sizeOfPiece / FieldConfig::LENGTH + 3; ++j) {
+    if (rank == 0) {
+        for (int j = 0; j < sizeOfPiece / FieldConfig::LENGTH; ++j) {
             for (int i = 0; i < FieldConfig::LENGTH; ++i) {
                 std::cout << "|";
                 std::cout << bigPieceOfField[j * FieldConfig::LENGTH + i].curValue;
             }
             std::cout << "|" << std::endl;
         }
-        std::cout << std::endl;
     } else {
-        for (int j = 0; j < sizeOfPiece / FieldConfig::LENGTH + 6; ++j) {
+        for (int j = 3; j < sizeOfPiece / FieldConfig::LENGTH + 3; ++j) {
             for (int i = 0; i < FieldConfig::LENGTH; ++i) {
                 std::cout << "|";
                 std::cout << bigPieceOfField[j * FieldConfig::LENGTH + i].curValue;
             }
             std::cout << "|" << std::endl;
         }
+    }
+    if (rank == size - 1){
         std::cout << std::endl;
     }
 }
@@ -447,68 +443,55 @@ void Field::applyFirstRule(Cell &cell, int shift) {
     cell.curValue = -1;
     attachTemplateA1(cell);
     if (cell.matchValue) {
-       // fieldWithNewValues[(cell.posY - shift) * FieldConfig::LENGTH + cell.posX].curValue = 1;
         return;
     }
     attachTemplateA2(cell);
     if (cell.matchValue) {
-      //  fieldWithNewValues[(cell.posY - shift) * FieldConfig::LENGTH + cell.posX].curValue = 1;
         return;
     }
     attachTemplateA3(cell);
     if (cell.matchValue) {
-       // fieldWithNewValues[(cell.posY - shift) * FieldConfig::LENGTH + cell.posX].curValue = 0;
         return;
     }
     attachTemplateA4(cell);
     if (cell.matchValue) {
-      //  fieldWithNewValues[(cell.posY - shift) * FieldConfig::LENGTH + cell.posX].curValue = 0;
         return;
     }
     attachTemplateA5(cell);
     if (cell.matchValue) {
-       // fieldWithNewValues[(cell.posY - shift) * FieldConfig::LENGTH + cell.posX].curValue = 0;
         return;
     }
     attachTemplateA6(cell);
     if (cell.matchValue) {
-      //  fieldWithNewValues[(cell.posY - shift) * FieldConfig::LENGTH + cell.posX].curValue = 0;
         return;
     }
     attachTemplateA7(cell);
     if (cell.matchValue) {
-       // fieldWithNewValues[(cell.posY - shift) * FieldConfig::LENGTH + cell.posX].curValue = 0;
         return;
     }
     attachTemplateA8(cell);
     if (cell.matchValue) {
-       // fieldWithNewValues[(cell.posY - shift) * FieldConfig::LENGTH + cell.posX].curValue = 0;
         return;
     }
     attachTemplateA9(cell);
     if (cell.matchValue) {
-       // fieldWithNewValues[(cell.posY - shift) * FieldConfig::LENGTH + cell.posX].curValue = 0;
         return;
     }
     attachTemplateA10(cell);
     if (cell.matchValue) {
-        //fieldWithNewValues[(cell.posY - shift) * FieldConfig::LENGTH + cell.posX].curValue = 0;
         return;
     }
     attachTemplateA11(cell);
     if (cell.matchValue) {
-        //fieldWithNewValues[(cell.posY - shift) * FieldConfig::LENGTH + cell.posX].curValue = 0;
         return;
     }
     attachTemplateA12(cell);
     if (cell.matchValue) {
-        //fieldWithNewValues[(cell.posY - shift) * FieldConfig::LENGTH + cell.posX].curValue = 0;
         return;
     } else {
         bool TrueFalse = (rand() % 100) < PROBABILITY;
         if (TrueFalse) {
             cell.curValue = rand() % 2;
-            //fieldWithNewValues[(cell.posY - shift) * FieldConfig::LENGTH + cell.posX].curValue = rand() % 2;
         } else {
             cell.curValue = oldValue;
         }

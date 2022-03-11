@@ -13,7 +13,6 @@
 class Field {
 private:
     Cell *bigPieceOfField;
-    Cell *fieldWithNewValues;
 
     void attachTemplateA1(Cell &cell);
 
