@@ -56,6 +56,8 @@ private:
 
     static bool validateKernel(Cell &left, Cell &right);
 
+    void applyFirstRule(Cell& cell, int oldValue);
+
     const int PROBABILITY = 50;
 
 public:
@@ -63,7 +65,7 @@ public:
         return bigPieceOfField[y * FieldConfig::LENGTH + x];
     }
 
-    void applyFirstRule(Cell &cell, int shift);
+    void applyTemplates(Cell &cell, int shift);
 
     Field(int sizeOfField, int rank, int size);
 

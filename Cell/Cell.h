@@ -12,9 +12,13 @@ public:
     int posX = 0;
     int posY = 0;
     int curValue = -1;
-    int matchValue = 0;
+    int matchZeroRefval = 0;
+    int matchOneRefVal = 0;
+    int hitValue = -1;
 
     Cell() = default;
+
+    void countHitValue();
 
     friend bool operator==(const Cell &lhs, const Cell &rhs);
 

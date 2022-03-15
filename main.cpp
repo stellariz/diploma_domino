@@ -9,10 +9,10 @@ void updateField(Field &field, int rank, const int dataVec) {
     int randomY;
     if (rank == 0) {
         randomY = rand() % (dataVec / FieldConfig::LENGTH);
-        field.applyFirstRule(field.getCell(randomX, randomY), 0);
+        field.applyTemplates(field.getCell(randomX, randomY), 0);
     } else {
         randomY = rand() % (dataVec / FieldConfig::LENGTH) + 3;
-        field.applyFirstRule(field.getCell(randomX, randomY), 3);
+        field.applyTemplates(field.getCell(randomX, randomY), 3);
     }
 }
 
@@ -63,17 +63,21 @@ MPI_Datatype createCellType() {
     Cell cell;
     int lengths[4] = {1, 1, 1, 1};
     MPI_Datatype types[4] = {MPI_INT, MPI_INT, MPI_INT, MPI_INT};
-    MPI_Aint disp[4];
+    MPI_Aint disp[6];
     MPI_Aint base_address;
     MPI_Get_address(&cell, &base_address);
     MPI_Get_address(&cell.posX, &disp[0]);
     MPI_Get_address(&cell.posY, &disp[1]);
     MPI_Get_address(&cell.curValue, &disp[2]);
-    MPI_Get_address(&cell.matchValue, &disp[3]);
+    MPI_Get_address(&cell.matchZeroRefval, &disp[3]);
+    MPI_Get_address(&cell.matchOneRefVal, &disp[4]);
+    MPI_Get_address(&cell.hitValue, &disp[5]);
     disp[0] = MPI_Aint_diff(disp[0], base_address);
     disp[1] = MPI_Aint_diff(disp[1], base_address);
     disp[2] = MPI_Aint_diff(disp[2], base_address);
     disp[3] = MPI_Aint_diff(disp[3], base_address);
+    disp[4] = MPI_Aint_diff(disp[4], base_address);
+    disp[5] = MPI_Aint_diff(disp[5], base_address);
     MPI_Type_create_struct(4, lengths, disp, types, &cellType);
     MPI_Type_commit(&cellType);
     return cellType;
@@ -92,8 +96,8 @@ int main(int argc, char **argv) {
     Field field(dataVec[rank], rank, size);
     MPI_Request reqs[2], reqr[2];
 
-    for (int i = 0; i < 5000; ++i) {
-        for (int j = 0; j < FieldConfig::LENGTH * dataVec[rank]; ++j) {
+    for (int i = 0; i < 200; ++i) {
+        for (int j = 0; j < 1000; ++j) {
             updateField(field, rank, dataVec[rank]);
         }
         sendBoundaries(field, cellType, dataVec[rank], reqs, reqr, rank, size);

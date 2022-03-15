@@ -13,6 +13,16 @@ bool operator!=(const Cell &lhs, const Cell &rhs) {
     return !(lhs == rhs);
 }
 
+void Cell::countHitValue() {
+    if (matchOneRefVal == 0 && matchZeroRefval == 0) {
+        hitValue = 0;
+    } else if (matchOneRefVal == 0 && matchZeroRefval != 0) {
+        hitValue = matchZeroRefval;
+    } else if (matchOneRefVal == 1 && matchZeroRefval == 0) {
+        hitValue = 100;
+    }
+}
+
 
 
 

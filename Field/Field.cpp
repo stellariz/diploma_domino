@@ -60,7 +60,7 @@ void Field::printMainField(int rank, int size, int sizeOfPiece) {
             std::cout << "|" << std::endl;
         }
     }
-    if (rank == size - 1){
+    if (rank == size - 1) {
         std::cout << std::endl;
     }
 }
@@ -153,18 +153,14 @@ void Field::attachTemplateA1(Cell &cell) {
         Cell right = getCell(cell.posX + 1, cell.posY);
         std::vector<Cell> hull = getBigHorizontalHull(cell, right);
         if (validateHull(hull) && validateKernel(cell, right)) {
-            cell.curValue = 1;
-            cell.matchValue++;
-            return;
+            cell.matchOneRefVal++;
         }
     }
     if (checkBigTemplateVerticalBounds(cell.posX, cell.posY)) {
         Cell bot = getCell(cell.posX, cell.posY + 1);
         std::vector<Cell> hull = getBigVerticalHull(cell, bot);
         if (validateHull(hull) && validateKernel(cell, bot)) {
-            cell.curValue = 1;
-            cell.matchValue++;
-            return;
+            cell.matchOneRefVal++;
         }
     }
 }
@@ -174,18 +170,14 @@ void Field::attachTemplateA2(Cell &cell) {
         Cell left = getCell(cell.posX - 1, cell.posY);
         std::vector<Cell> hull = getBigHorizontalHull(left, cell);
         if (validateHull(hull) && validateKernel(left, cell)) {
-            cell.curValue = 1;
-            cell.matchValue++;
-            return;
+            cell.matchOneRefVal++;
         }
     }
     if (checkBigTemplateVerticalBounds(cell.posX, cell.posY - 1)) {
         Cell top = getCell(cell.posX, cell.posY - 1);
         std::vector<Cell> hull = getBigVerticalHull(top, cell);
         if (validateHull(hull) && validateKernel(top, cell)) {
-            cell.curValue = 1;
-            cell.matchValue++;
-            return;
+            cell.matchOneRefVal++;
         }
     }
 }
@@ -196,9 +188,7 @@ void Field::attachTemplateA3(Cell &cell) {
         Cell right = getCell(cell.posX + 1, cell.posY + 1);
         std::vector<Cell> hull = getBigHorizontalHull(left, right);
         if (validateHull(hull) && validateKernel(left, right)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
     }
     if (checkBigTemplateVerticalBounds(cell.posX - 1, cell.posY)) {
@@ -206,9 +196,7 @@ void Field::attachTemplateA3(Cell &cell) {
         Cell bot = getCell(cell.posX - 1, cell.posY + 1);
         std::vector<Cell> hull = getBigVerticalHull(top, bot);
         if (validateHull(hull) && validateKernel(top, bot)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
     }
 }
@@ -219,9 +207,7 @@ void Field::attachTemplateA4(Cell &cell) {
         Cell right = getCell(cell.posX, cell.posY + 1);
         std::vector<Cell> hull = getBigHorizontalHull(left, right);
         if (validateHull(hull) && validateKernel(left, right)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
     }
     if (checkBigTemplateVerticalBounds(cell.posX - 1, cell.posY - 1)) {
@@ -229,9 +215,7 @@ void Field::attachTemplateA4(Cell &cell) {
         Cell bot = getCell(cell.posX - 1, cell.posY);
         std::vector<Cell> hull = getBigVerticalHull(top, bot);
         if (validateHull(hull) && validateKernel(top, bot)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
     }
 }
@@ -243,9 +227,7 @@ void Field::attachTemplateA5(Cell &cell) {
         Cell right = getCell(cell.posX + 1, cell.posY - 1);
         std::vector<Cell> hull = getBigHorizontalHull(left, right);
         if (validateHull(hull) && validateKernel(left, right)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
     }
     if (checkBigTemplateVerticalBounds(cell.posX + 1, cell.posY)) {
@@ -253,9 +235,7 @@ void Field::attachTemplateA5(Cell &cell) {
         Cell bot = getCell(cell.posX + 1, cell.posY + 1);
         std::vector<Cell> hull = getBigVerticalHull(top, bot);
         if (validateHull(hull) && validateKernel(top, bot)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
     }
 }
@@ -266,9 +246,7 @@ void Field::attachTemplateA6(Cell &cell) {
         Cell right = getCell(cell.posX, cell.posY - 1);
         std::vector<Cell> hull = getBigHorizontalHull(left, right);
         if (validateHull(hull) && validateKernel(left, right)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
     }
     if (checkBigTemplateVerticalBounds(cell.posX + 1, cell.posY - 1)) {
@@ -276,9 +254,7 @@ void Field::attachTemplateA6(Cell &cell) {
         Cell bot = getCell(cell.posX + 1, cell.posY);
         std::vector<Cell> hull = getBigVerticalHull(top, bot);
         if (validateHull(hull) && validateKernel(top, bot)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
     }
 }
@@ -293,9 +269,7 @@ void Field::attachTemplateA7(Cell &cell) {
         Cell right = getCell(cell.posX + 2, cell.posY);
         std::vector<Cell> hull = getSmallHull(topLeftCorner, left, right);
         if (validateHull(hull) && validateKernel(left, right)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
     }
     if (checkSmallTemplateBounds(cell.posX, cell.posY + 1)) {
@@ -304,9 +278,7 @@ void Field::attachTemplateA7(Cell &cell) {
         Cell bot = getCell(cell.posX, cell.posY + 2);
         std::vector<Cell> hull = getSmallHull(topLeftCorner, top, bot);
         if (validateHull(hull) && validateKernel(top, bot)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
     }
 }
@@ -318,9 +290,7 @@ void Field::attachTemplateA8(Cell &cell) {
         Cell right = getCell(cell.posX - 1, cell.posY);
         std::vector<Cell> hull = getSmallHull(topLeftCorner, left, right);
         if (validateHull(hull) && validateKernel(left, right)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
 
     }
@@ -330,9 +300,7 @@ void Field::attachTemplateA8(Cell &cell) {
         Cell bot = getCell(cell.posX, cell.posY - 1);
         std::vector<Cell> hull = getSmallHull(topLeftCorner, top, bot);
         if (validateHull(hull) && validateKernel(top, bot)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
     }
 }
@@ -344,9 +312,7 @@ void Field::attachTemplateA9(Cell &cell) {
         Cell right = getCell(cell.posX + 2, cell.posY + 1);
         std::vector<Cell> hull = getSmallHull(topLeftCorner, left, right);
         if (validateHull(hull) && validateKernel(left, right)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
     }
     if (checkSmallTemplateBounds(cell.posX - 1, cell.posY + 1)) {
@@ -355,9 +321,7 @@ void Field::attachTemplateA9(Cell &cell) {
         Cell bot = getCell(cell.posX - 1, cell.posY + 2);
         std::vector<Cell> hull = getSmallHull(topLeftCorner, top, bot);
         if (validateHull(hull) && validateKernel(top, bot)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
     }
 }
@@ -369,9 +333,7 @@ void Field::attachTemplateA10(Cell &cell) {
         Cell right = getCell(cell.posX - 1, cell.posY + 1);
         std::vector<Cell> hull = getSmallHull(topLeftCorner, left, right);
         if (validateHull(hull) && validateKernel(left, right)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
     }
     if (checkSmallTemplateBounds(cell.posX - 1, cell.posY - 1)) {
@@ -380,9 +342,7 @@ void Field::attachTemplateA10(Cell &cell) {
         Cell bot = getCell(cell.posX - 1, cell.posY - 1);
         std::vector<Cell> hull = getSmallHull(topLeftCorner, top, bot);
         if (validateHull(hull) && validateKernel(top, bot)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
     }
 }
@@ -394,9 +354,7 @@ void Field::attachTemplateA11(Cell &cell) {
         Cell right = getCell(cell.posX + 2, cell.posY - 1);
         std::vector<Cell> hull = getSmallHull(topLeftCorner, left, right);
         if (validateHull(hull) && validateKernel(left, right)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
     }
     if (checkSmallTemplateBounds(cell.posX + 1, cell.posY + 1)) {
@@ -405,9 +363,7 @@ void Field::attachTemplateA11(Cell &cell) {
         Cell bot = getCell(cell.posX + 1, cell.posY + 2);
         std::vector<Cell> hull = getSmallHull(topLeftCorner, top, bot);
         if (validateHull(hull) && validateKernel(top, bot)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
     }
 }
@@ -419,9 +375,7 @@ void Field::attachTemplateA12(Cell &cell) {
         Cell right = getCell(cell.posX - 1, cell.posY - 1);
         std::vector<Cell> hull = getSmallHull(topLeftCorner, left, right);
         if (validateHull(hull) && validateKernel(left, right)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
     }
     if (checkSmallTemplateBounds(cell.posX + 1, cell.posY - 1)) {
@@ -430,72 +384,31 @@ void Field::attachTemplateA12(Cell &cell) {
         Cell bot = getCell(cell.posX + 1, cell.posY - 1);
         std::vector<Cell> hull = getSmallHull(topLeftCorner, top, bot);
         if (validateHull(hull) && validateKernel(top, bot)) {
-            cell.curValue = 0;
-            cell.matchValue++;
-            return;
+            cell.matchZeroRefval++;
         }
     }
 }
 
-void Field::applyFirstRule(Cell &cell, int shift) {
-    cell.matchValue = 0;
+void Field::applyTemplates(Cell &cell, int shift) {
+    cell.matchZeroRefval = 0;
+    cell.matchOneRefVal = 0;
+    cell.hitValue = -1;
     int oldValue = cell.curValue;
     cell.curValue = -1;
     attachTemplateA1(cell);
-    if (cell.matchValue) {
-        return;
-    }
     attachTemplateA2(cell);
-    if (cell.matchValue) {
-        return;
-    }
     attachTemplateA3(cell);
-    if (cell.matchValue) {
-        return;
-    }
     attachTemplateA4(cell);
-    if (cell.matchValue) {
-        return;
-    }
     attachTemplateA5(cell);
-    if (cell.matchValue) {
-        return;
-    }
     attachTemplateA6(cell);
-    if (cell.matchValue) {
-        return;
-    }
     attachTemplateA7(cell);
-    if (cell.matchValue) {
-        return;
-    }
     attachTemplateA8(cell);
-    if (cell.matchValue) {
-        return;
-    }
     attachTemplateA9(cell);
-    if (cell.matchValue) {
-        return;
-    }
     attachTemplateA10(cell);
-    if (cell.matchValue) {
-        return;
-    }
     attachTemplateA11(cell);
-    if (cell.matchValue) {
-        return;
-    }
     attachTemplateA12(cell);
-    if (cell.matchValue) {
-        return;
-    } else {
-        bool TrueFalse = (rand() % 100) < PROBABILITY;
-        if (TrueFalse) {
-            cell.curValue = rand() % 2;
-        } else {
-            cell.curValue = oldValue;
-        }
-    }
+    cell.countHitValue();
+    applyFirstRule(cell, oldValue);
 }
 
 
@@ -515,6 +428,21 @@ Cell *Field::getLowerBound(int rank) {
         return bigPieceOfField;
     }
     return bigPieceOfField + 3 * FieldConfig::LENGTH;
+}
+
+void Field::applyFirstRule(Cell &cell, int oldValue) {
+    if (cell.hitValue != 0 && cell.hitValue != 100) {
+        cell.curValue = 0;
+    } else if (cell.hitValue == 100) {
+        cell.curValue = 1;
+    } else if (cell.hitValue == 0) {
+        bool TrueFalse = (rand() % 100) < PROBABILITY;
+        if (TrueFalse) {
+            cell.curValue = rand() % 2;
+        } else {
+            cell.curValue = oldValue;
+        }
+    }
 }
 
 
