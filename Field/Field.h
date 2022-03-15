@@ -56,14 +56,22 @@ private:
 
     static bool validateKernel(Cell &left, Cell &right);
 
-    void applyFirstRule(Cell& cell, int oldValue);
+    void applyFirstRule(Cell& cell);
 
     const int PROBABILITY = 50;
+
+    const int PROBABILITY00 = 10;
+
+    const int PROBABILITY01 = 90;
+
+    const int PROBABILITY2 = 7;
 
 public:
     Cell &getCell(int x, int y) {
         return bigPieceOfField[y * FieldConfig::LENGTH + x];
     }
+
+    void validateField(int rank, int size, int sizeOfPiece);
 
     void applyTemplates(Cell &cell, int shift);
 

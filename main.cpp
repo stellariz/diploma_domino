@@ -28,6 +28,61 @@ void waitEndOfCommunication(MPI_Request *reqr, MPI_Request *reqs, const int rank
     }
 }
 
+void testValidator(){
+    Field field(49, 0, 1);
+    field.getCell(0,0).curValue = 1;
+    field.getCell(0,1).curValue = 1;
+    field.getCell(0,2).curValue = 0;
+    field.getCell(0,3).curValue = 0;
+    field.getCell(0,4).curValue = 1;
+    field.getCell(0,5).curValue = 1;
+    field.getCell(0,6).curValue = 0;
+    field.getCell(1,0).curValue = 0;
+    field.getCell(1,1).curValue = 0;
+    field.getCell(1,2).curValue = 0;
+    field.getCell(1,3).curValue = 0;
+    field.getCell(1,4).curValue = 0;
+    field.getCell(1,5).curValue = 0;
+    field.getCell(1,6).curValue = 0;
+    field.getCell(2,0).curValue = 0;
+    field.getCell(2,1).curValue = 1;
+    field.getCell(2,2).curValue = 0;
+    field.getCell(2,3).curValue = 0;
+    field.getCell(2,4).curValue = 1;
+    field.getCell(2,5).curValue = 1;
+    field.getCell(2,6).curValue = 0;
+    field.getCell(3,0).curValue = 0;
+    field.getCell(3,1).curValue = 1;
+    field.getCell(3,2).curValue = 0;
+    field.getCell(3,3).curValue = 0;
+    field.getCell(3,4).curValue = 0;
+    field.getCell(3,5).curValue = 0;
+    field.getCell(3,6).curValue = 0;
+    field.getCell(4,0).curValue = 0;
+    field.getCell(4,1).curValue = 0;
+    field.getCell(4,2).curValue = 0;
+    field.getCell(4,3).curValue = 1;
+    field.getCell(4,4).curValue = 0;
+    field.getCell(4,5).curValue = 1;
+    field.getCell(4,6).curValue = 0;
+    field.getCell(5,0).curValue = 0;
+    field.getCell(5,1).curValue = 1;
+    field.getCell(5,2).curValue = 0;
+    field.getCell(5,3).curValue = 1;
+    field.getCell(5,4).curValue = 0;
+    field.getCell(5,5).curValue = 1;
+    field.getCell(5,6).curValue = 0;
+    field.getCell(6,0).curValue = 0;
+    field.getCell(6,1).curValue = 1;
+    field.getCell(6,2).curValue = 0;
+    field.getCell(6,3).curValue = 0;
+    field.getCell(6,4).curValue = 0;
+    field.getCell(6,5).curValue = 0;
+    field.getCell(6,6).curValue = 0;
+    field.printMainField(0, 1, 49);
+    field.validateField(0, 1, 49);
+}
+
 
 void sendBoundaries(Field &field, MPI_Datatype cellType, const int sizePerProc, MPI_Request *reqs, MPI_Request *reqr,
                     const int rank, const int size) {
@@ -61,8 +116,8 @@ void dataDistribution(int *dataVec, int *shiftVec, const int numProcs) {
 MPI_Datatype createCellType() {
     MPI_Datatype cellType;
     Cell cell;
-    int lengths[4] = {1, 1, 1, 1};
-    MPI_Datatype types[4] = {MPI_INT, MPI_INT, MPI_INT, MPI_INT};
+    int lengths[6] = {1, 1, 1, 1, 1, 1};
+    MPI_Datatype types[6] = {MPI_INT, MPI_INT, MPI_INT, MPI_INT, MPI_INT, MPI_INT};
     MPI_Aint disp[6];
     MPI_Aint base_address;
     MPI_Get_address(&cell, &base_address);
@@ -78,7 +133,7 @@ MPI_Datatype createCellType() {
     disp[3] = MPI_Aint_diff(disp[3], base_address);
     disp[4] = MPI_Aint_diff(disp[4], base_address);
     disp[5] = MPI_Aint_diff(disp[5], base_address);
-    MPI_Type_create_struct(4, lengths, disp, types, &cellType);
+    MPI_Type_create_struct(6, lengths, disp, types, &cellType);
     MPI_Type_commit(&cellType);
     return cellType;
 }
@@ -96,24 +151,26 @@ int main(int argc, char **argv) {
     Field field(dataVec[rank], rank, size);
     MPI_Request reqs[2], reqr[2];
 
-    for (int i = 0; i < 200; ++i) {
-        for (int j = 0; j < 1000; ++j) {
-            updateField(field, rank, dataVec[rank]);
-        }
-        sendBoundaries(field, cellType, dataVec[rank], reqs, reqr, rank, size);
-        waitEndOfCommunication(reqr, reqs, rank, size);
-        MPI_Barrier(MPI_COMM_WORLD);
-        for (int j = 0; j < size; ++j) {
-            if (rank == j) {
-                field.printMainField(rank, size, dataVec[rank]);
-            } else {
-                sleep(1);
-            }
-        }
-    }
-    if (rank == 0){
-        field.printMainField(rank, size, dataVec[rank]);
-    }
+//    for (int i = 0; i < 200; ++i) {
+//        for (int j = 0; j < 1000; ++j) {
+//            updateField(field, rank, dataVec[rank]);
+//        }
+//        sendBoundaries(field, cellType, dataVec[rank], reqs, reqr, rank, size);
+//        waitEndOfCommunication(reqr, reqs, rank, size);
+//        MPI_Barrier(MPI_COMM_WORLD);
+//        for (int j = 0; j < size; ++j) {
+//            if (rank == j) {
+//                field.validateField(rank, size, dataVec[rank]);
+//                field.printMainField(rank, size, dataVec[rank]);
+//            } else {
+//                sleep(1);
+//            }
+//        }
+//    }
+//    if (rank == 0){
+//        field.printMainField(rank, size, dataVec[rank]);
+//    }
+    testValidator();
     MPI_Finalize();
     delete[] dataVec;
     delete[] shiftVec;

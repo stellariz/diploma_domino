@@ -408,7 +408,8 @@ void Field::applyTemplates(Cell &cell, int shift) {
     attachTemplateA11(cell);
     attachTemplateA12(cell);
     cell.countHitValue();
-    applyFirstRule(cell, oldValue);
+    cell.curValue = oldValue;
+    applyFirstRule(cell);
 }
 
 
@@ -430,7 +431,7 @@ Cell *Field::getLowerBound(int rank) {
     return bigPieceOfField + 3 * FieldConfig::LENGTH;
 }
 
-void Field::applyFirstRule(Cell &cell, int oldValue) {
+void Field::applyFirstRule(Cell &cell) {
     if (cell.hitValue != 0 && cell.hitValue != 100) {
         cell.curValue = 0;
     } else if (cell.hitValue == 100) {
@@ -439,10 +440,39 @@ void Field::applyFirstRule(Cell &cell, int oldValue) {
         bool TrueFalse = (rand() % 100) < PROBABILITY;
         if (TrueFalse) {
             cell.curValue = rand() % 2;
-        } else {
-            cell.curValue = oldValue;
         }
     }
+}
+
+void Field::validateField(int rank, int size, int sizeOfPiece) {
+    int shift = rank == 0 ? 0 : 3;
+    for (int j = shift; j < sizeOfPiece / FieldConfig::LENGTH; ++j) {
+        for (int i = 0; i < FieldConfig::LENGTH; ++i) {
+            Cell &cell = bigPieceOfField[j * FieldConfig::LENGTH + i];
+            cell.matchZeroRefval = 0;
+            cell.matchOneRefVal = 0;
+            int oldValue = cell.curValue;
+            cell.curValue = -1;
+            attachTemplateA1(cell);
+            attachTemplateA2(cell);
+            attachTemplateA3(cell);
+            attachTemplateA4(cell);
+            attachTemplateA5(cell);
+            attachTemplateA6(cell);
+            attachTemplateA7(cell);
+            attachTemplateA8(cell);
+            attachTemplateA9(cell);
+            attachTemplateA10(cell);
+            attachTemplateA11(cell);
+            attachTemplateA12(cell);
+            cell.curValue = oldValue;
+            std::cout << cell.matchZeroRefval << " " << cell.matchOneRefVal << std::endl;
+            if (cell.matchOneRefVal == 0 && cell.matchZeroRefval == 0) {
+                return;
+            }
+        }
+    }
+    printMainField(rank, size, sizeOfPiece);
 }
 
 
