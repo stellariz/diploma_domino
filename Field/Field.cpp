@@ -406,7 +406,7 @@ Cell *Field::getLowerBound(int rank) {
 void Field::applyARule(Cell &cell) {
     if (cell.hitValue != 0 && cell.hitValue != 100){
         cell.curValue = 0;
-    } else if (cell.hitValue == 1){
+    } else if (cell.hitValue == 100){
         cell.curValue = 1;
     } else if (cell.hitValue == 0){
         bool trueFalse = (rand() % 100) < PROBABILITY00;
