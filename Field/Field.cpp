@@ -4,34 +4,18 @@
 
 #include "Field.h"
 
-Field::Field(int sizeOfPiece, int rank, int size) {
-    srand(time(NULL) + rank);
-    if (rank == 0) {
-        bigPieceOfField = new Cell[sizeOfPiece + 3 * FieldConfig::LENGTH];
-        for (int j = 0; j < sizeOfPiece / FieldConfig::LENGTH; ++j) {
-            for (int i = 0; i < FieldConfig::LENGTH; ++i) {
-                bigPieceOfField[j * FieldConfig::LENGTH + i].curValue = rand() % 2;
-                bigPieceOfField[j * FieldConfig::LENGTH + i].posX = i;
-                bigPieceOfField[j * FieldConfig::LENGTH + i].posY = j;
+Field::Field() {
+    srand(time(NULL));
+    bigPieceOfField = new Cell[(FieldConfig::WIDTH + 2) * (FieldConfig::LENGTH + 2)];
+    for (int j = 0; j < FieldConfig::WIDTH + 2; ++j) {
+        for (int i = 0; i < FieldConfig::LENGTH + 2; ++i) {
+            if (j == 0 || i == 0 || j == FieldConfig::WIDTH + 1 || i == FieldConfig::LENGTH + 1) {
+                bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].curValue = 0;
+            } else {
+                bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].curValue = rand() % 2;
             }
-        }
-    } else if (rank == size - 1) {
-        bigPieceOfField = new Cell[sizeOfPiece + 3 * FieldConfig::LENGTH];
-        for (int j = 3; j < sizeOfPiece / FieldConfig::LENGTH + 3; ++j) {
-            for (int i = 0; i < FieldConfig::LENGTH; ++i) {
-                bigPieceOfField[j * FieldConfig::LENGTH + i].curValue = rand() % 2;
-                bigPieceOfField[j * FieldConfig::LENGTH + i].posX = i;
-                bigPieceOfField[j * FieldConfig::LENGTH + i].posY = j;
-            }
-        }
-    } else {
-        bigPieceOfField = new Cell[sizeOfPiece + 6 * FieldConfig::LENGTH];
-        for (int j = 3; j < sizeOfPiece / FieldConfig::LENGTH + 3; ++j) {
-            for (int i = 0; i < FieldConfig::LENGTH; ++i) {
-                bigPieceOfField[j * FieldConfig::LENGTH + i].curValue = rand() % 2;
-                bigPieceOfField[j * FieldConfig::LENGTH + i].posX = i;
-                bigPieceOfField[j * FieldConfig::LENGTH + i].posY = j;
-            }
+            bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].posX = i;
+            bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].posY = j;
         }
     }
 }
@@ -42,33 +26,21 @@ Field::~Field() {
 }
 
 
-void Field::printMainField(int rank, int size, int sizeOfPiece) {
-    if (rank == 0) {
-        for (int j = 0; j < sizeOfPiece / FieldConfig::LENGTH; ++j) {
-            for (int i = 0; i < FieldConfig::LENGTH; ++i) {
-                std::cout << "|";
-                std::cout << bigPieceOfField[j * FieldConfig::LENGTH + i].curValue;
-            }
-            std::cout << "|" << std::endl;
+void Field::printMainField() {
+    for (int j = 1; j < FieldConfig::WIDTH + 1; ++j) {
+        for (int i = 1; i < FieldConfig::LENGTH + 1; ++i) {
+            std::cout << "|";
+            std::cout << bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].curValue;
         }
-    } else {
-        for (int j = 3; j < sizeOfPiece / FieldConfig::LENGTH + 3; ++j) {
-            for (int i = 0; i < FieldConfig::LENGTH; ++i) {
-                std::cout << "|";
-                std::cout << bigPieceOfField[j * FieldConfig::LENGTH + i].curValue;
-            }
-            std::cout << "|" << std::endl;
-        }
+        std::cout << "|" << std::endl;
     }
-    if (rank == size - 1) {
-        std::cout << std::endl;
-    }
+    std::cout << std::endl;
 }
 
 
 bool Field::isInBounds(int x, int y) {
-    return x >= 0 && x < FieldConfig::LENGTH &&
-           y >= 0 && y < FieldConfig::WIDTH;
+    return x >= 0 && x < FieldConfig::LENGTH + 2 &&
+           y >= 0 && y < FieldConfig::WIDTH + 2;
 }
 
 bool Field::validateKernel(Cell &left, Cell &right) {
@@ -102,10 +74,10 @@ bool Field::checkSmallTemplateBounds(int x, int y) {
 
 // by top cell
 bool Field::checkBigTemplateVerticalBounds(int x, int y) {
-    return isInBounds(x - 1, y + 1) &&
-           isInBounds(x + 1, y + 1) &&
-           isInBounds(x - 1, y - 2) &&
-           isInBounds(x + 1, y - 2);
+    return isInBounds(x - 1, y + 2) &&
+           isInBounds(x + 1, y + 2) &&
+           isInBounds(x - 1, y - 1) &&
+           isInBounds(x + 1, y - 1);
 }
 
 
@@ -113,9 +85,9 @@ std::vector<Cell> Field::getSmallHull(Cell &leftTopCorner, Cell &firstKernelCell
     std::vector<Cell> area;
     for (int i = leftTopCorner.posY; i <= leftTopCorner.posY + 2; ++i) {
         for (int j = leftTopCorner.posX; j <= leftTopCorner.posX + 2; ++j) {
-            if (bigPieceOfField[i * FieldConfig::LENGTH + j] != firstKernelCell &&
-                bigPieceOfField[i * FieldConfig::LENGTH + j] != secondKernelCell) {
-                area.push_back(bigPieceOfField[i * FieldConfig::LENGTH + j]);
+            if (bigPieceOfField[i * (FieldConfig::LENGTH + 2) + j] != firstKernelCell &&
+                bigPieceOfField[i * (FieldConfig::LENGTH + 2) + j] != secondKernelCell) {
+                area.push_back(bigPieceOfField[i * (FieldConfig::LENGTH + 2) + j]);
             }
         }
     }
@@ -126,9 +98,9 @@ std::vector<Cell> Field::getBigVerticalHull(Cell &top, Cell &bottom) {
     std::vector<Cell> area;
     for (int i = top.posY - 1; i <= top.posY + 2; ++i) {
         for (int j = top.posX - 1; j <= top.posX + 1; ++j) {
-            if (bigPieceOfField[i * FieldConfig::LENGTH + j] != top &&
-                bigPieceOfField[i * FieldConfig::LENGTH + j] != bottom) {
-                area.push_back(bigPieceOfField[i * FieldConfig::LENGTH + j]);
+            if (bigPieceOfField[i * (FieldConfig::LENGTH + 2) + j] != top &&
+                bigPieceOfField[i * (FieldConfig::LENGTH + 2) + j] != bottom) {
+                area.push_back(bigPieceOfField[i * (FieldConfig::LENGTH + 2) + j]);
             }
         }
     }
@@ -139,9 +111,9 @@ std::vector<Cell> Field::getBigHorizontalHull(Cell &left, Cell &right) {
     std::vector<Cell> area;
     for (int i = left.posY - 1; i <= left.posY + 1; ++i) {
         for (int j = left.posX - 1; j <= left.posX + 2; ++j) {
-            if (bigPieceOfField[i * FieldConfig::LENGTH + j] != left &&
-                bigPieceOfField[i * FieldConfig::LENGTH + j] != right) {
-                area.push_back(bigPieceOfField[i * FieldConfig::LENGTH + j]);
+            if (bigPieceOfField[i * (FieldConfig::LENGTH + 2) + j] != left &&
+                bigPieceOfField[i * (FieldConfig::LENGTH + 2) + j] != right) {
+                area.push_back(bigPieceOfField[i * (FieldConfig::LENGTH + 2) + j]);
             }
         }
     }
@@ -389,7 +361,7 @@ void Field::attachTemplateA12(Cell &cell) {
     }
 }
 
-void Field::applyTemplates(Cell &cell, int shift) {
+void Field::applyTemplates(Cell &cell) {
     cell.matchZeroRefval = 0;
     cell.matchOneRefVal = 0;
     cell.hitValue = -1;
@@ -409,7 +381,7 @@ void Field::applyTemplates(Cell &cell, int shift) {
     attachTemplateA12(cell);
     cell.countHitValue();
     cell.curValue = oldValue;
-    applyFirstRule(cell);
+    applyARule(cell);
 }
 
 
@@ -431,24 +403,25 @@ Cell *Field::getLowerBound(int rank) {
     return bigPieceOfField + 3 * FieldConfig::LENGTH;
 }
 
-void Field::applyFirstRule(Cell &cell) {
-    if (cell.hitValue != 0 && cell.hitValue != 100) {
+void Field::applyARule(Cell &cell) {
+    if (cell.hitValue != 0 && cell.hitValue != 100){
         cell.curValue = 0;
-    } else if (cell.hitValue == 100) {
+    } else if (cell.hitValue == 1){
         cell.curValue = 1;
-    } else if (cell.hitValue == 0) {
-        bool TrueFalse = (rand() % 100) < PROBABILITY;
-        if (TrueFalse) {
+    } else if (cell.hitValue == 0){
+        bool trueFalse = (rand() % 100) < PROBABILITY00;
+        if (trueFalse) {
             cell.curValue = rand() % 2;
         }
     }
 }
 
-void Field::validateField(int rank, int size, int sizeOfPiece) {
-    int shift = rank == 0 ? 0 : 3;
-    for (int j = shift; j < sizeOfPiece / FieldConfig::LENGTH; ++j) {
-        for (int i = 0; i < FieldConfig::LENGTH; ++i) {
-            Cell &cell = bigPieceOfField[j * FieldConfig::LENGTH + i];
+
+int Field::validateField() {
+    int numBlackCell = 0;
+    for (int j = 1; j < FieldConfig::WIDTH + 1; ++j) {
+        for (int i = 1; i < FieldConfig::LENGTH + 1; ++i) {
+            Cell &cell = bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i];
             cell.matchZeroRefval = 0;
             cell.matchOneRefVal = 0;
             int oldValue = cell.curValue;
@@ -466,13 +439,15 @@ void Field::validateField(int rank, int size, int sizeOfPiece) {
             attachTemplateA11(cell);
             attachTemplateA12(cell);
             cell.curValue = oldValue;
-            std::cout << cell.matchZeroRefval << " " << cell.matchOneRefVal << std::endl;
             if (cell.matchOneRefVal == 0 && cell.matchZeroRefval == 0) {
-                return;
+                return 0;
+            }
+            if (cell.curValue == 1){
+                numBlackCell++;
             }
         }
     }
-    printMainField(rank, size, sizeOfPiece);
+    return numBlackCell / 2;
 }
 
 
