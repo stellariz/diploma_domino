@@ -384,25 +384,6 @@ void Field::applyTemplates(Cell &cell) {
     applyARule(cell);
 }
 
-
-Cell *Field::getMainField() {
-    return bigPieceOfField;
-}
-
-Cell *Field::getUpperBound(int rank, int size) {
-    if (rank == 0) {
-        return bigPieceOfField + size;
-    }
-    return bigPieceOfField + size + 3 * FieldConfig::LENGTH;
-}
-
-Cell *Field::getLowerBound(int rank) {
-    if (rank == 0) {
-        return bigPieceOfField;
-    }
-    return bigPieceOfField + 3 * FieldConfig::LENGTH;
-}
-
 void Field::applyARule(Cell &cell) {
     if (cell.hitValue != 0 && cell.hitValue != 100){
         cell.curValue = 0;

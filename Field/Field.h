@@ -74,12 +74,6 @@ public:
     ~Field();
 
     void printMainField();
-
-    Cell *getUpperBound(int rank, int size);
-
-    Cell *getLowerBound(int rank);
-
-    Cell *getMainField();
 };
 
 
