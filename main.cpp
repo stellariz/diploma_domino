@@ -10,6 +10,7 @@ void updateField(Field &field) {
 
 int main() {
     int dominoes[] = {0, 0, 0, 0, 0, 0};
+    double t_avrg = 0;
     for (int k = 0; k < 1000; ++k) {
         Field field;
         for (int i = 0; i < 200; ++i) {
@@ -19,6 +20,7 @@ int main() {
             int numOfDominoes = field.validateField();
             if (numOfDominoes) {
                 dominoes[numOfDominoes-5]++;
+                t_avrg += i;
                 break;
             }
         }
@@ -26,5 +28,7 @@ int main() {
     for (int domino : dominoes) {
         std::cout << domino << " ";
     }
+    std::cout << std::endl;
+    std::cout << "t_avrg= " << t_avrg / 1000;
     return 0;
 }
