@@ -1,0 +1,3 @@
+/home/ruslan/CLionProjects/diplom_domino/cmake-build-debug/CMakeFiles/diplom_domino.dir
+/home/ruslan/CLionProjects/diplom_domino/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/ruslan/CLionProjects/diplom_domino/cmake-build-debug/CMakeFiles/rebuild_cache.dir

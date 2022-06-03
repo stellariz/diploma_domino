@@ -8,6 +8,7 @@
 #include <iostream>
 #include "FieldConfig.h"
 #include "../Cell/Cell.h"
+#include <cstring>
 
 
 class Field {
@@ -58,7 +59,7 @@ private:
 
     void applyARule(Cell& cell);
 
-    const int PROBABILITY00 = 25;
+    const int PROBABILITY00 = 50;
 
 public:
     Cell &getCell(int x, int y) {
@@ -69,11 +70,15 @@ public:
 
     void applyTemplates(Cell &cell);
 
+    void initField();
+
     Field();
 
     ~Field();
 
     void printMainField();
+
+    int updateEvolveState();
 };
 
 

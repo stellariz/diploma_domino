@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/diplom_domino.dir/main.cpp.o CMakeFiles/diplom_domino.dir/Cell/Cell.cpp.o CMakeFiles/diplom_domino.dir/Field/Field.cpp.o -o diplom_domino 

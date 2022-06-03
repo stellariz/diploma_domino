@@ -10,25 +10,28 @@ void updateField(Field &field) {
 
 int main() {
     int dominoes[] = {0, 0, 0, 0, 0, 0};
-    double t_avrg = 0;
+    int nonGapState = 2;
+    double t_avg = 0;
+    Field field;
     for (int k = 0; k < 1000; ++k) {
-        Field field;
+        field.initField();
         for (int i = 0; i < 200; ++i) {
-            for (int j = 0; j < FieldConfig::LENGTH * FieldConfig::WIDTH; ++j) {
+            for (int j = 0; j < FieldConfig::LENGTH * FieldConfig::WIDTH*2; ++j) {
                 updateField(field);
             }
+            int changedCells = field.updateEvolveState();
             int numOfDominoes = field.validateField();
-            if (numOfDominoes) {
-                dominoes[numOfDominoes-5]++;
-                t_avrg += i;
+            if (changedCells <= nonGapState && numOfDominoes >= 5) {
+                dominoes[numOfDominoes - 5]++;
+                t_avg += i;
                 break;
             }
         }
     }
-    for (int domino : dominoes) {
+    for (int domino: dominoes) {
         std::cout << domino << " ";
     }
     std::cout << std::endl;
-    std::cout << "t_avrg= " << t_avrg / 1000;
+    std::cout << "t_avg= " << t_avg / 1000;
     return 0;
 }
