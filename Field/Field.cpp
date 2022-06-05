@@ -22,7 +22,7 @@ void Field::initField() {
             }
             bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].posX = i;
             bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].posY = j;
-            bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].lastEvolveValue = bigPieceOfField[
+            bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].prevIterValue = bigPieceOfField[
                     j * (FieldConfig::LENGTH + 2) + i].curValue;
         }
     }
@@ -430,6 +430,8 @@ int Field::validateField() {
             cell.curValue = oldValue;
             if (cell.curValue == 1 && cell.matchOneRefVal != 0) {
                 numBlackCell++;
+            } else if (cell.matchOneRefVal == 0 || cell.matchZeroRefVal == 0){
+                return -1;
             }
         }
     }
@@ -441,10 +443,10 @@ int Field::updateEvolveState() {
     for (int j = 1; j < FieldConfig::WIDTH + 1; ++j) {
         for (int i = 1; i < FieldConfig::LENGTH + 1; ++i) {
             auto &cell = getCell(i, j);
-            if (cell.curValue != cell.lastEvolveValue) {
+            if (cell.curValue != cell.prevIterValue) {
                 changedCell++;
             }
-            cell.lastEvolveValue = cell.curValue;
+            cell.prevIterValue = cell.curValue;
         }
     }
     return changedCell;

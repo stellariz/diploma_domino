@@ -43,7 +43,7 @@ private:
 
     std::vector<Cell> getBigVerticalHull(Cell &top, Cell &bottom);
 
-    std::vector<Cell> getSmallHull(Cell &leftTopCorner, Cell &firstKernelCell, Cell &secondKetnelCell);
+    std::vector<Cell> getSmallHull(Cell &leftTopCorner, Cell &firstKernelCell, Cell &secondKernelCell);
 
     static bool checkSmallTemplateBounds(int x, int y);
 
@@ -59,7 +59,7 @@ private:
 
     void applyARule(Cell& cell);
 
-    const int PROBABILITY00 = 50;
+    const int PROBABILITY00 = 25;
 
 public:
     Cell &getCell(int x, int y) {
