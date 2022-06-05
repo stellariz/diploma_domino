@@ -4,12 +4,12 @@
 
 int main() {
     int dominoes[] = {0, 0, 0, 0, 0, 0};
-    const int nonGapState = 0;
+    const int gaps_number = 0;
+    const int total_iter = 1000;
     const int T_max = 200;
-    double t_avg = 0;
+    double total_step = 0;
     Field field;
-    for (int k = 0; k < 1000; ++k) {
-        std::cout << k << std::endl;
+    for (int k = 0; k < total_iter; ++k) {
         field.initField();
         for (int i = 0; i < T_max; ++i) {
             for (int posY = 1; posY <= FieldConfig::WIDTH; ++posY){
@@ -17,20 +17,20 @@ int main() {
                     field.applyTemplates(field.getCell(posX, posY));
                 }
             }
+            // 25
             int changedCells = field.updateEvolveState();
             int numOfDominoes = field.validateField();
-            if (changedCells <= nonGapState && numOfDominoes >= 5) {
+            if (changedCells <= gaps_number && numOfDominoes >= 5) {
                 dominoes[numOfDominoes - 5]++;
-                field.printMainField();
-                t_avg += i;
+                total_step += i;
                 break;
             }
         }
     }
-    for (int domino: dominoes) {
+    for (const int domino: dominoes) {
         std::cout << domino << " ";
     }
     std::cout << std::endl;
-    std::cout << "t_avg = " << t_avg / 1000;
+    std::cout << "total_step = " << total_step / total_iter;
     return 0;
 }

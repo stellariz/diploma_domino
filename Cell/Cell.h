@@ -11,7 +11,7 @@ class Cell {
 public:
     int posX = 0;
     int posY = 0;
-    int curValue = -1;
+    int prevIterValue = -1;
     int matchZeroRefVal = 0;
     int matchOneRefVal = 0;
     int hitValue = 0;

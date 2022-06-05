@@ -16,9 +16,9 @@ void Field::initField() {
     for (int j = 0; j < FieldConfig::WIDTH + 2; ++j) {
         for (int i = 0; i < FieldConfig::LENGTH + 2; ++i) {
             if (j == 0 || i == 0 || j == FieldConfig::WIDTH + 1 || i == FieldConfig::LENGTH + 1) {
-                bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].curValue = 0;
+                bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].prevIterValue = 0;
             } else {
-                bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].curValue = rand() % 2;
+                bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].prevIterValue = rand() % 2;
             }
             bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].posX = i;
             bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].posY = j;
@@ -36,7 +36,7 @@ void Field::printMainField() {
     for (int j = 1; j < FieldConfig::WIDTH + 1; ++j) {
         for (int i = 1; i < FieldConfig::LENGTH + 1; ++i) {
             std::cout << "|";
-            std::cout << bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].curValue;
+            std::cout << bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].prevIterValue;
         }
         std::cout << "|" << std::endl;
     }
@@ -50,12 +50,12 @@ bool Field::isInBounds(int x, int y) {
 }
 
 bool Field::validateKernel(Cell &left, Cell &right) {
-    return left.curValue != 0 && right.curValue != 0;
+    return left.prevIterValue != 0 && right.prevIterValue != 0;
 }
 
 bool Field::validateHull(std::vector<Cell> &hull) {
     for (Cell &cell: hull) {
-        if (cell.curValue == 1) {
+        if (cell.prevIterValue == 1) {
             return false;
         }
     }
@@ -370,8 +370,8 @@ void Field::attachTemplateA12(Cell &cell) {
 void Field::applyTemplates(Cell &cell) {
     cell.matchZeroRefVal = 0;
     cell.matchOneRefVal = 0;
-    int oldValue = cell.curValue;
-    cell.curValue = -1;
+    int oldValue = cell.prevIterValue;
+    cell.prevIterValue = -1;
     attachTemplateA1(cell);
     attachTemplateA2(cell);
     attachTemplateA3(cell);
@@ -385,7 +385,7 @@ void Field::applyTemplates(Cell &cell) {
     attachTemplateA11(cell);
     attachTemplateA12(cell);
     cell.countHitValue();
-    cell.curValue = oldValue;
+    cell.prevIterValue = oldValue;
     applyARule(cell);
 }
 
@@ -410,8 +410,8 @@ int Field::validateField() {
             Cell &cell = bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i];
             cell.matchZeroRefVal = 0;
             cell.matchOneRefVal = 0;
-            int oldValue = cell.curValue;
-            cell.curValue = -1;
+            int oldValue = cell.prevIterValue;
+            cell.prevIterValue = -1;
             attachTemplateA1(cell);
             attachTemplateA2(cell);
             attachTemplateA3(cell);
@@ -424,8 +424,8 @@ int Field::validateField() {
             attachTemplateA10(cell);
             attachTemplateA11(cell);
             attachTemplateA12(cell);
-            cell.curValue = oldValue;
-            if (cell.curValue == 1 && cell.matchOneRefVal != 0) {
+            cell.prevIterValue = oldValue;
+            if (cell.prevIterValue == 1 && cell.matchOneRefVal != 0) {
                 numBlackCell++;
             }
         }
@@ -439,9 +439,9 @@ int Field::updateEvolveState() {
         for (int i = 1; i < FieldConfig::LENGTH + 1; ++i) {
             auto &cell = getCell(i, j);
             cell.hitValue = cell.newHitValue;
-            if (cell.curValue != cell.newValue) {
+            if (cell.prevIterValue != cell.newValue) {
                 changedCell++;
-                cell.curValue = cell.newValue;
+                cell.prevIterValue = cell.newValue;
             }
         }
     }
