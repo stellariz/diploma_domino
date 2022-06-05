@@ -14,8 +14,10 @@ public:
     int curValue = -1;
     int matchZeroRefVal = 0;
     int matchOneRefVal = 0;
-    int hitValue = -1;
-    int lastEvolveValue = -1;
+    int hitValue = 0;
+
+    int newValue;
+    int newHitValue;
 
     Cell() = default;
 

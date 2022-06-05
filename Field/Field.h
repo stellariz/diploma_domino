@@ -59,7 +59,7 @@ private:
 
     void applyARule(Cell& cell);
 
-    const int PROBABILITY00 = 50;
+    const int PROBABILITY00 = 25;
 
 public:
     Cell &getCell(int x, int y) {

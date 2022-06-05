@@ -16,11 +16,11 @@ bool operator!=(const Cell &lhs, const Cell &rhs) {
 
 void Cell::countHitValue() {
     if (matchOneRefVal == 0 && matchZeroRefVal == 0) {
-        hitValue = 0;
+        newHitValue = 0;
     } else if (matchOneRefVal == 0 && matchZeroRefVal != 0) {
-        hitValue = matchZeroRefVal;
+        newHitValue = matchZeroRefVal;
     } else if (matchOneRefVal == 1 && matchZeroRefVal == 0) {
-        hitValue = 100;
+        newHitValue = 100;
     }
 }
 

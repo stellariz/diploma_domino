@@ -22,8 +22,6 @@ void Field::initField() {
             }
             bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].posX = i;
             bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].posY = j;
-            bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].lastEvolveValue = bigPieceOfField[
-                    j * (FieldConfig::LENGTH + 2) + i].curValue;
         }
     }
 }
@@ -372,7 +370,6 @@ void Field::attachTemplateA12(Cell &cell) {
 void Field::applyTemplates(Cell &cell) {
     cell.matchZeroRefVal = 0;
     cell.matchOneRefVal = 0;
-    cell.hitValue = -1;
     int oldValue = cell.curValue;
     cell.curValue = -1;
     attachTemplateA1(cell);
@@ -394,13 +391,13 @@ void Field::applyTemplates(Cell &cell) {
 
 void Field::applyARule(Cell &cell) {
     if (cell.hitValue > 0 && cell.hitValue != 100) {
-        cell.curValue = 0;
+        cell.newValue = 0;
     } else if (cell.hitValue == 100) {
-        cell.curValue = 1;
+        cell.newValue = 1;
     } else if (cell.hitValue == 0) {
         bool trueFalse = (rand() % 100) < PROBABILITY00;
         if (trueFalse) {
-            cell.curValue = rand() % 2;
+            cell.newValue = rand() % 2;
         }
     }
 }
@@ -441,10 +438,11 @@ int Field::updateEvolveState() {
     for (int j = 1; j < FieldConfig::WIDTH + 1; ++j) {
         for (int i = 1; i < FieldConfig::LENGTH + 1; ++i) {
             auto &cell = getCell(i, j);
-            if (cell.curValue != cell.lastEvolveValue) {
+            cell.hitValue = cell.newHitValue;
+            if (cell.curValue != cell.newValue) {
                 changedCell++;
+                cell.curValue = cell.newValue;
             }
-            cell.lastEvolveValue = cell.curValue;
         }
     }
     return changedCell;
