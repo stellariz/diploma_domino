@@ -59,7 +59,9 @@ private:
 
     void applyARule(Cell& cell);
 
-    const int PROBABILITY00 = 100;
+    const int PROBABILITY00 = 25;
+
+    const int nonGapState = 4;
 
 public:
     Cell &getCell(int x, int y) {
@@ -78,7 +80,7 @@ public:
 
     void printMainField();
 
-    int updateEvolveState();
+    void updateEvolveState();
 };
 
 

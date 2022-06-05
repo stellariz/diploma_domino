@@ -405,6 +405,7 @@ void Field::applyARule(Cell &cell) {
 
 int Field::validateField() {
     int numBlackCell = 0;
+    int gaps = 0;
     for (int j = 1; j < FieldConfig::WIDTH + 1; ++j) {
         for (int i = 1; i < FieldConfig::LENGTH + 1; ++i) {
             Cell &cell = bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i];
@@ -427,25 +428,26 @@ int Field::validateField() {
             cell.prevIterValue = oldValue;
             if (cell.prevIterValue == 1 && cell.matchOneRefVal != 0) {
                 numBlackCell++;
+            } else if (cell.prevIterValue == 1 && cell.matchOneRefVal == 0 ||
+                       cell.prevIterValue == 0 && cell.matchZeroRefVal == 0) {
+                gaps++;
             }
         }
+    }
+    if (gaps > nonGapState) {
+        return -1;
     }
     return numBlackCell / 2;
 }
 
-int Field::updateEvolveState() {
-    int changedCell = 0;
+void Field::updateEvolveState() {
     for (int j = 1; j < FieldConfig::WIDTH + 1; ++j) {
         for (int i = 1; i < FieldConfig::LENGTH + 1; ++i) {
             auto &cell = getCell(i, j);
             cell.hitValue = cell.newHitValue;
-            if (cell.prevIterValue != cell.newValue) {
-                changedCell++;
-                cell.prevIterValue = cell.newValue;
-            }
+            cell.prevIterValue = cell.newValue;
         }
     }
-    return changedCell;
 }
 
 
