@@ -15,7 +15,6 @@ public:
     int matchZeroRefVal = 0;
     int matchOneRefVal = 0;
     int hitValue = -1;
-    int prevIterValue = -1;
 
     Cell() = default;
 

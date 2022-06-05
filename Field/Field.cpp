@@ -22,8 +22,6 @@ void Field::initField() {
             }
             bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].posX = i;
             bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].posY = j;
-            bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i].prevIterValue = bigPieceOfField[
-                    j * (FieldConfig::LENGTH + 2) + i].curValue;
         }
     }
 }
@@ -408,6 +406,7 @@ void Field::applyARule(Cell &cell) {
 
 int Field::validateField() {
     int numBlackCell = 0;
+    int gaps = 0;
     for (int j = 1; j < FieldConfig::WIDTH + 1; ++j) {
         for (int i = 1; i < FieldConfig::LENGTH + 1; ++i) {
             Cell &cell = bigPieceOfField[j * (FieldConfig::LENGTH + 2) + i];
@@ -431,25 +430,14 @@ int Field::validateField() {
             if (cell.curValue == 1 && cell.matchOneRefVal != 0) {
                 numBlackCell++;
             } else if (cell.curValue == 1 && cell.matchOneRefVal == 0 || cell.curValue == 0 && cell.matchZeroRefVal == 0){
-                return -1;
+                gaps++;
             }
         }
     }
-    return numBlackCell / 2;
-}
-
-int Field::updateEvolveState() {
-    int changedCell = 0;
-    for (int j = 1; j < FieldConfig::WIDTH + 1; ++j) {
-        for (int i = 1; i < FieldConfig::LENGTH + 1; ++i) {
-            auto &cell = getCell(i, j);
-            if (cell.curValue != cell.prevIterValue) {
-                changedCell++;
-            }
-            cell.prevIterValue = cell.curValue;
-        }
+    if (gaps <= nonGapState){
+        return numBlackCell / 2;
     }
-    return changedCell;
+    return -1;
 }
 
 

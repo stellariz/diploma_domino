@@ -61,6 +61,8 @@ private:
 
     const int PROBABILITY00 = 25;
 
+    const int nonGapState = 4;
+
 public:
     Cell &getCell(int x, int y) {
         return bigPieceOfField[y * (FieldConfig::LENGTH + 2) + x];
@@ -77,8 +79,6 @@ public:
     ~Field();
 
     void printMainField();
-
-    int updateEvolveState();
 };
 
 
