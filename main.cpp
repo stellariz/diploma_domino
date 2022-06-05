@@ -21,14 +21,10 @@ int main() {
             for (int j = 0; j < FieldConfig::LENGTH * FieldConfig::WIDTH; ++j) {
                 updateField(field);
             }
-            int changedCells = field.updateEvolveState();
             int numOfDominoes = field.validateField();
-            if (changedCells <= nonGapState && numOfDominoes >= 5) {
+            if (numOfDominoes >= 5) {
                 dominoes[numOfDominoes - 5]++;
                 total_step += i;
-                if (numOfDominoes == 5){
-                    field.printMainField();
-                }
                 break;
             }
         }

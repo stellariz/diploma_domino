@@ -430,7 +430,7 @@ int Field::validateField() {
             cell.curValue = oldValue;
             if (cell.curValue == 1 && cell.matchOneRefVal != 0) {
                 numBlackCell++;
-            } else if (cell.matchOneRefVal == 0 || cell.matchZeroRefVal == 0){
+            } else if (cell.curValue == 1 && cell.matchOneRefVal == 0 || cell.curValue == 0 && cell.matchZeroRefVal == 0){
                 return -1;
             }
         }
